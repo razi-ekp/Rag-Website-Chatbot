@@ -1,0 +1,29 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+pydantic
+pydantic-settings
+
+# LLM & Embeddings
+groq
+sentence-transformers
+torch
+
+# Vector Store
+chromadb
+
+# Web Crawling
+httpx
+beautifulsoup4
+lxml
+
+# Streaming
+sse-starlette
+
+# Testing
+pytest
+pytest-asyncio
+
+# Utilities
+tenacity
+loguru
