@@ -196,7 +196,7 @@ Frontend runs at: http://localhost:3000
 
 ```bash
 # Clone
-git clone https://github.com/YOUR_USERNAME/rag-website-chatbot.git
+git clone https://github.com/razi-ekp/Rag-Website-Chatbot.git
 cd rag-website-chatbot
 
 # Add your Groq API key to backend/.env
@@ -210,6 +210,11 @@ docker compose up --build
 # API: http://localhost:8000
 # Docs: http://localhost:8000/docs
 ```
+### 🖥️ Option 3: Windows One-Click (Easiest)
+1. Clone the repository
+2. Copy `backend/.env.example` to `backend/.env` and add your `GROQ_API_KEY`
+3. Double-click `start.bat` (Run as administrator)
+4. Browser opens automatically at http://localhost:3000
 
 ---
 
@@ -301,7 +306,7 @@ Full interactive docs: **http://localhost:8000/docs**
 
 ## 👤 Author
 
-**Razi** — [GitHub](https://github.com/razi-ekp)
+**Mohammed Razi** — [GitHub](https://github.com/razi-ekp) [LinkedIn](https://linkedin.com/in/raziekp)
 
 ---
 
