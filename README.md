@@ -300,7 +300,7 @@ Full interactive docs: **http://localhost:8000/docs**
 
 ## 🎥 Video Demo
 
-📹 [Watch on YouTube (Unlisted)](https://youtube.com/YOUR_LINK_HERE)
+📹 [Watch on YouTube (Unlisted)](https://youtu.be/DxRW0GxrZhQ)
 
 ---
 
