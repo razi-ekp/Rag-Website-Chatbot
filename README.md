@@ -14,8 +14,8 @@
  
 > Paste any website URL → Watch it crawl in real time → Ask questions → Get AI answers with source citations
 
-![Demo Screenshot](screenshots/demo.png)
-![Demo Screenshot 2](screenshots/demo2.png)
+![Demo Screenshot](./screenshots/demo.png)
+![Demo Screenshot 2](./screenshots/demo2.png)
  
 ---
 
