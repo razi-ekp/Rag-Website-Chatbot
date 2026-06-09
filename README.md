@@ -1,4 +1,4 @@
-# 🤖 RAG Website Chatbot
+#  RAG Website Chatbot
 
 > An AI-powered chatbot that crawls any website and lets you chat with its content in real time.
 
@@ -11,13 +11,9 @@
 
 ---
 
-## 📸 Demo
 
-> Paste any website URL → Watch it crawl in real time → Ask questions → Get AI answers with source citations
 
----
-
-## ✨ Features
+##  Features
 
 | Feature | Details |
 |---|---|
@@ -34,7 +30,7 @@
 
 ---
 
-## 🏗 Architecture
+##  Architecture
 
 ```
 User Browser
@@ -65,7 +61,7 @@ FastAPI Backend (Port 8000)
 
 ---
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -81,7 +77,7 @@ FastAPI Backend (Port 8000)
 
 ---
 
-## 🔒 Security
+##  Security
 
 | Feature | Details |
 |---|---|
@@ -94,7 +90,7 @@ Prompt injection attempts return a red security alert in the UI. The message nev
 
 ---
 
-## 📊 Confidence Score
+##  Confidence Score
 
 | Label | Score Range | Meaning |
 |---|---|---|
@@ -105,7 +101,7 @@ Prompt injection attempts return a red security alert in the UI. The message nev
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 Rag-Website-Chatbot/
@@ -169,7 +165,7 @@ Rag-Website-Chatbot/
 
 ---
 
-## ⚙️ Prerequisites
+##  Prerequisites
 
 - Python 3.11+
 - Node.js 18+
@@ -179,7 +175,7 @@ Rag-Website-Chatbot/
 
 ---
 
-## 🚀 Setup & Installation
+##  Setup & Installation
 
 ### Option 1: Windows One-Click (Easiest)
 
@@ -253,7 +249,7 @@ docker compose up --build
 
 ---
 
-## 🧪 Run Tests
+##  Run Tests
 
 ```bash
 cd backend
@@ -265,7 +261,7 @@ Expected: **55 tests passed** across 4 test files.
 
 ---
 
-## 📡 API Reference
+##  API Reference
 
 ### Ingest
 
@@ -289,7 +285,7 @@ Full interactive docs: **http://127.0.0.1:8000/docs**
 
 ---
 
-## 🔑 Environment Variables
+##  Environment Variables
 
 | Variable | Default | Description |
 |---|---|---|
@@ -308,7 +304,7 @@ Full interactive docs: **http://127.0.0.1:8000/docs**
 
 ---
 
-## 💡 Solution Approach
+##  Solution Approach
 
 1. **Crawling** — Async parallel BFS crawler using `httpx` fetches 5 pages simultaneously, extracts clean text by removing nav/scripts/footers, and follows internal links within the same domain.
 
@@ -327,12 +323,12 @@ Full interactive docs: **http://127.0.0.1:8000/docs**
 ---
 
 
-## 👤 Author
+##  Author
 
 **Mohammed Razi** — [GitHub](https://github.com/razi-ekp) | [LinkedIn](https://linkedin.com/in/raziekp)
 
 ---
 
-## 📄 License
+##  License
 
 MIT License
