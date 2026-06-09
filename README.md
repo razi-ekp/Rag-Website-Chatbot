@@ -1,33 +1,40 @@
 # 🤖 RAG Website Chatbot
 
->  Chat with any website using AI-powered Retrieval-Augmented Generation
+> An AI-powered chatbot that crawls any website and lets you chat with its content in real time.
 
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688?logo=fastapi)](https://fastapi.tiangolo.com)
-[![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react)](https://reactjs.org)
-[![Groq](https://img.shields.io/badge/LLM-Groq_LLaMA_3.3_70B-F55036)](https://groq.com)
-[![ChromaDB](https://img.shields.io/badge/VectorDB-ChromaDB-orange)](https://trychroma.com)
-
----
-
-## 📌 Project Description
-
-A production-ready AI chatbot that crawls any website, indexes all its content into a vector database, and lets users ask natural language questions — answered instantly using LLaMA 3.3 70B via Groq.
-
-**What makes this different from existing RAG chatbots:**
-
-| Feature | This Project | ChatPDF | Perplexity |
-|---|:---:|:---:|:---:|
-| 🔴 Prompt Injection Detection | ✅ | ❌ | ❌ |
-| 📊 Confidence Badges (HIGH/MEDIUM/LOW) | ✅ | ❌ | ❌ |
-| 📡 Live Crawl Progress (SSE) | ✅ | ❌ | ❌ |
-| 💡 Auto-generated Suggested Questions | ✅ | ❌ | ❌ |
-| 🌐 Full Website Recursive Crawl | ✅ | ❌ | ✅ |
-| ⚡ Token-by-token Streaming | ✅ | ❌ | ✅ |
-| 📎 Source Citations per Answer | ✅ | ✅ | ✅ |
+![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-Latest-009688?logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react&logoColor=white)
+![ChromaDB](https://img.shields.io/badge/VectorDB-ChromaDB-orange)
+![Groq](https://img.shields.io/badge/LLM-LLaMA_3.3_70B-F55036)
+![License](https://img.shields.io/badge/License-MIT-green)
 
 ---
 
-## 🏗 System Architecture
+## 📸 Demo
+
+> Paste any website URL → Watch it crawl in real time → Ask questions → Get AI answers with source citations
+
+---
+
+## ✨ Features
+
+| Feature | Details |
+|---|---|
+| **Recursive crawler** | Follows same-domain links up to configurable page limits |
+| **Live crawl progress** | Real-time progress bar using Server-Sent Events (SSE) |
+| **Semantic search** | ChromaDB + HuggingFace all-MiniLM-L6-v2 embeddings |
+| **Streaming answers** | Token-by-token streaming like ChatGPT via SSE |
+| **Confidence scoring** | Labels answers as HIGH, MEDIUM, LOW, or FALLBACK |
+| **Source citations** | Returns exact source URLs with each answer |
+| **Suggested questions** | Auto-generates relevant questions after indexing |
+| **Prompt injection detection** | 15 regex patterns block jailbreaks and instruction overrides |
+| **Multi-site support** | Index multiple websites and switch between them |
+| **Parallel crawling** | Fetches 5 pages simultaneously — 5x faster than sequential |
+
+---
+
+## 🏗 Architecture
 
 ```
 User Browser
@@ -43,9 +50,9 @@ React Frontend (Port 3000)
 FastAPI Backend (Port 8000)
     │
     ├── WebCrawler (httpx + BeautifulSoup)
-    │       └── Recursive same-domain crawl
+    │       └── Parallel async crawl (5 pages simultaneously)
     │
-    ├── TextChunker (sliding window, configurable)
+    ├── TextChunker (sliding window, 500 words, 50 overlap)
     │
     ├── VectorStore (ChromaDB + HuggingFace all-MiniLM-L6-v2)
     │       └── Cosine similarity retrieval
@@ -60,67 +67,94 @@ FastAPI Backend (Port 8000)
 
 ## 🛠 Tech Stack
 
-| Layer | Technology | Why |
+| Layer | Technology |
+|---|---|
+| **API** | FastAPI + Uvicorn |
+| **Crawler** | httpx + BeautifulSoup4 |
+| **Embeddings** | HuggingFace all-MiniLM-L6-v2 (local) |
+| **LLM** | Groq LLaMA 3.3 70B (llama-3.3-70b-versatile) |
+| **Vector Store** | ChromaDB (local persistent) |
+| **Frontend** | React 18 + Tailwind CSS |
+| **Security** | Custom prompt injection detector (15 patterns) |
+| **Testing** | pytest (55 tests) |
+| **Deployment** | Docker + Docker Compose |
+
+---
+
+## 🔒 Security
+
+| Feature | Details |
+|---|---|
+| **Prompt injection detection** | Detects role override attempts (`ignore previous instructions`, `act as`, `jailbreak`), system prompt extraction (`reveal your prompt`), and known jailbreak phrases before the message reaches the LLM |
+| **Domain-scoped crawling** | Crawler never leaves the target domain — prevents SSRF-style abuse |
+| **Input length limits** | Questions capped at 1000 characters |
+| **CORS configuration** | Strict origin whitelisting |
+
+Prompt injection attempts return a red security alert in the UI. The message never reaches the LLM.
+
+---
+
+## 📊 Confidence Score
+
+| Label | Score Range | Meaning |
 |---|---|---|
-| LLM | Groq LLaMA 3.3 70B | Fastest inference, free tier, excellent reasoning |
-| Embeddings | HuggingFace all-MiniLM-L6-v2 | Local, fast, no API cost, 384-dim |
-| Vector DB | ChromaDB | Persistent, local, simple API, cosine similarity |
-| Backend | FastAPI + SSE | Async, fast, auto-docs, native streaming |
-| Frontend | React 18 + Tailwind CSS | Component-based, utility-first dark UI |
-| Crawler | httpx + BeautifulSoup4 | Async HTTP, robust HTML parsing |
-| Containerization | Docker + Docker Compose | One-command deployment |
+| **HIGH** | >= 0.75 | Strong match in crawled website content |
+| **MEDIUM** | 0.50 - 0.74 | Partial but useful match |
+| **LOW** | 0.35 - 0.49 | Weak match |
+| **FALLBACK** | < 0.35 | No reliable context found |
 
 ---
 
 ## 📁 Project Structure
 
 ```
-rag-website-chatbot/
+Rag-Website-Chatbot/
 ├── backend/
 │   ├── app/
 │   │   ├── api/
-│   │   │   ├── ingest.py        # Crawl & index endpoints + SSE progress
-│   │   │   └── chat.py          # Q&A endpoints + streaming
+│   │   │   ├── ingest.py           # Crawl & index endpoints + SSE progress
+│   │   │   └── chat.py             # Q&A endpoints + streaming
 │   │   ├── core/
-│   │   │   ├── config.py        # Pydantic settings
-│   │   │   └── logging.py       # Loguru setup
+│   │   │   ├── config.py           # Pydantic settings
+│   │   │   └── logging.py          # Loguru setup
 │   │   ├── models/
-│   │   │   └── schemas.py       # All Pydantic models
+│   │   │   └── schemas.py          # All Pydantic models
 │   │   ├── services/
-│   │   │   ├── crawler.py       # Async web crawler
-│   │   │   ├── vector_store.py  # ChromaDB + embeddings
-│   │   │   ├── llm_service.py   # Groq LLM + suggested questions
-│   │   │   └── site_manager.py  # Site metadata persistence
+│   │   │   ├── crawler.py          # Async parallel web crawler
+│   │   │   ├── vector_store.py     # ChromaDB + embeddings
+│   │   │   ├── llm_service.py      # Groq LLM + suggested questions
+│   │   │   └── site_manager.py     # Site metadata persistence
 │   │   ├── utils/
-│   │   │   ├── chunker.py       # Sliding-window text chunker
+│   │   │   ├── chunker.py          # Sliding-window text chunker
 │   │   │   └── injection_detector.py  # 15-pattern injection guard
-│   │   └── main.py              # FastAPI app + CORS + lifespan
+│   │   └── main.py                 # FastAPI app + CORS + lifespan
 │   ├── tests/
 │   │   ├── test_injection_detector.py  # 15 tests
 │   │   ├── test_chunker.py             # 12 tests
 │   │   ├── test_crawler.py             # 14 tests
-│   │   └── test_api.py                 # 14 tests (mocked)
+│   │   └── test_api.py                 # 14 tests
 │   ├── requirements.txt
 │   ├── pytest.ini
+│   ├── .env.example
 │   └── Dockerfile
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── chat/
-│   │   │   │   ├── ChatWindow.jsx       # Main chat area
-│   │   │   │   ├── ChatMessage.jsx      # User/assistant bubbles
-│   │   │   │   ├── ChatInput.jsx        # Textarea + send/stop
+│   │   │   │   ├── ChatWindow.jsx
+│   │   │   │   ├── ChatMessage.jsx
+│   │   │   │   ├── ChatInput.jsx
 │   │   │   │   └── SuggestedQuestions.jsx
 │   │   │   ├── sidebar/
-│   │   │   │   └── Sidebar.jsx          # URL input, site list, progress
+│   │   │   │   └── Sidebar.jsx
 │   │   │   └── ui/
-│   │   │       ├── ConfidenceBadge.jsx  # HIGH/MEDIUM/LOW/FALLBACK
-│   │   │       └── SourceCitations.jsx  # Expandable source links
+│   │   │       ├── ConfidenceBadge.jsx
+│   │   │       └── SourceCitations.jsx
 │   │   ├── hooks/
-│   │   │   ├── useChat.js              # SSE streaming chat state
-│   │   │   └── useIngest.js            # Crawl progress state
+│   │   │   ├── useChat.js
+│   │   │   └── useIngest.js
 │   │   ├── services/
-│   │   │   └── api.js                  # Axios API layer
+│   │   │   └── api.js
 │   │   ├── App.jsx
 │   │   └── index.js
 │   ├── public/index.html
@@ -128,123 +162,106 @@ rag-website-chatbot/
 │   ├── package.json
 │   └── Dockerfile
 ├── docker-compose.yml
+├── start.bat
 ├── .gitignore
 └── README.md
 ```
 
 ---
 
-## ⚙️ Setup & Installation
-
-### Prerequisites
+## ⚙️ Prerequisites
 
 - Python 3.11+
 - Node.js 18+
-- [Groq API key](https://console.groq.com) (free)
+- [Groq API key](https://console.groq.com) — free tier available
 - Git
+- Windows 10/11 (for `start.bat`) or Linux/Mac
 
 ---
 
-### 🚀 Option 1: Local Development (Recommended for demo)
+## 🚀 Setup & Installation
+
+### Option 1: Windows One-Click (Easiest)
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/razi-ekp/Rag-Website-Chatbot.git
+cd Rag-Website-Chatbot
+
+# 2. Create backend/.env file
+copy backend\.env.example backend\.env
+# Open backend/.env and add your GROQ_API_KEY
+
+# 3. Double-click start.bat (Run as administrator)
+# It automatically creates venv, installs dependencies,
+# starts backend on http://127.0.0.1:8000
+# and frontend on http://localhost:3000
+```
+
+---
+
+### Option 2: Manual Setup
 
 #### Backend
 
 ```bash
-# Clone the repository
-git clone https://github.com/YOUR_USERNAME/rag-website-chatbot.git
-cd rag-website-chatbot/backend
+git clone https://github.com/razi-ekp/Rag-Website-Chatbot.git
+cd Rag-Website-Chatbot/backend
 
-# Create virtual environment
+# Create and activate virtual environment
 python -m venv venv
-source venv/bin/activate          # Windows: venv\Scripts\activate
+venv\Scripts\activate        # Windows
+source venv/bin/activate     # Mac/Linux
 
 # Install dependencies
 pip install -r requirements.txt
 
 # Configure environment
-cp .env.example .env
+copy .env.example .env
 # Edit .env and add your GROQ_API_KEY
 
 # Run the server
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-Backend runs at: http://localhost:8000
-API Docs at: http://localhost:8000/docs
+Backend: http://127.0.0.1:8000  
+API Docs: http://127.0.0.1:8000/docs
 
 #### Frontend
 
 ```bash
 cd ../frontend
-
-# Install dependencies
 npm install
-
-# Configure environment
-cp .env.example .env
-# REACT_APP_API_URL=http://localhost:8000/api/v1 (default)
-
-# Start development server
 npm start
 ```
 
-Frontend runs at: http://localhost:3000
+Frontend: http://localhost:3000
 
 ---
 
-### 🐳 Option 2: Docker (One-command)
+### Option 3: Docker
 
 ```bash
-# Clone
 git clone https://github.com/razi-ekp/Rag-Website-Chatbot.git
-cd rag-website-chatbot
+cd Rag-Website-Chatbot
 
-# Add your Groq API key to backend/.env
-cp backend/.env.example backend/.env
-echo "GROQ_API_KEY=your_key_here" >> backend/.env
+copy backend\.env.example backend\.env
+# Add GROQ_API_KEY to backend/.env
 
-# Build and start
 docker compose up --build
-
-# App: http://localhost:3000
-# API: http://localhost:8000
-# Docs: http://localhost:8000/docs
 ```
-### 🖥️ Option 3: Windows One-Click (Easiest)
-1. Clone the repository
-2. Copy `backend/.env.example` to `backend/.env` and add your `GROQ_API_KEY`
-3. Double-click `start.bat` (Run as administrator)
-4. Browser opens automatically at http://localhost:3000
 
 ---
 
-### 🧪 Running Tests
+## 🧪 Run Tests
 
 ```bash
 cd backend
-source venv/bin/activate
+venv\Scripts\activate
 pytest tests/ -v --tb=short
 ```
 
-Expected: **55 tests** across 4 test files.
-
----
-
-## 🔑 Environment Variables
-
-| Variable | Default | Description |
-|---|---|---|
-| `GROQ_API_KEY` | required | Your Groq API key |
-| `GROQ_MODEL` | `llama-3.3-70b-versatile` | LLM model |
-| `EMBEDDING_MODEL` | `all-MiniLM-L6-v2` | HuggingFace embedding model |
-| `CHROMA_PERSIST_DIR` | `./chroma_db` | ChromaDB storage path |
-| `MAX_CRAWL_PAGES` | `50` | Max pages to crawl per site |
-| `CHUNK_SIZE` | `500` | Words per chunk |
-| `CHUNK_OVERLAP` | `50` | Overlap between chunks |
-| `TOP_K_RESULTS` | `5` | Number of retrieved chunks |
-| `CONFIDENCE_HIGH_THRESHOLD` | `0.75` | Cosine similarity for HIGH |
-| `CONFIDENCE_MEDIUM_THRESHOLD` | `0.50` | Cosine similarity for MEDIUM |
-| `CORS_ORIGINS` | `http://localhost:3000` | Allowed frontend origin |
+Expected: **55 tests passed** across 4 test files.
 
 ---
 
@@ -256,7 +273,7 @@ Expected: **55 tests** across 4 test files.
 |---|---|---|
 | POST | `/api/v1/ingest/start` | Start crawling a website |
 | GET | `/api/v1/ingest/stream/{site_id}` | SSE: live crawl progress |
-| GET | `/api/v1/ingest/status/{site_id}` | Get site status |
+| GET | `/api/v1/ingest/status/{site_id}` | Get site indexing status |
 | GET | `/api/v1/ingest/sites` | List all indexed sites |
 | DELETE | `/api/v1/ingest/sites/{site_id}` | Delete a site |
 
@@ -266,50 +283,56 @@ Expected: **55 tests** across 4 test files.
 |---|---|---|
 | POST | `/api/v1/chat/ask` | Ask a question (non-streaming) |
 | POST | `/api/v1/chat/stream` | Ask a question (SSE streaming) |
-| GET | `/api/v1/chat/suggested/{site_id}` | Get suggested questions |
+| GET | `/api/v1/chat/suggested/{site_id}` | Get AI-generated suggested questions |
 
-Full interactive docs: **http://localhost:8000/docs**
+Full interactive docs: **http://127.0.0.1:8000/docs**
 
 ---
 
-## 🔒 Security Features
+## 🔑 Environment Variables
 
-- **Prompt Injection Detection**: 15 regex patterns guard against jailbreaks, instruction overrides, system prompt extraction, and script injection
-- **Input length limits**: Questions capped at 1000 characters
-- **Domain-scoped crawling**: Crawler never leaves the target domain
-- **CORS configuration**: Strict origin whitelisting
-- **Rate limiting**: Crawl delay between requests (300ms) to be a good citizen
+| Variable | Default | Description |
+|---|---|---|
+| `GROQ_API_KEY` | **required** | Your Groq API key from console.groq.com |
+| `GROQ_MODEL` | `llama-3.3-70b-versatile` | LLM model |
+| `EMBEDDING_MODEL` | `all-MiniLM-L6-v2` | HuggingFace embedding model |
+| `CHROMA_PERSIST_DIR` | `./chroma_db` | ChromaDB storage path |
+| `MAX_CRAWL_PAGES` | `50` | Max pages to crawl per site |
+| `CHUNK_SIZE` | `500` | Words per chunk |
+| `CHUNK_OVERLAP` | `50` | Overlap between chunks |
+| `TOP_K_RESULTS` | `5` | Number of retrieved chunks |
+| `CONFIDENCE_HIGH_THRESHOLD` | `0.75` | Cosine similarity for HIGH |
+| `CONFIDENCE_MEDIUM_THRESHOLD` | `0.50` | Cosine similarity for MEDIUM |
+| `CORS_ORIGINS` | `http://localhost:3000` | Allowed frontend origin |
+| `HF_HUB_OFFLINE` | `1` | Use cached embedding model offline |
 
 ---
 
 ## 💡 Solution Approach
 
-1. **Crawling**: An async BFS crawler using `httpx` visits all pages of a given domain, extracts clean text (removing nav, scripts, footers), and follows internal links recursively.
+1. **Crawling** — Async parallel BFS crawler using `httpx` fetches 5 pages simultaneously, extracts clean text by removing nav/scripts/footers, and follows internal links within the same domain.
 
-2. **Chunking**: Text is split into overlapping windows (500 words, 50-word overlap) to ensure context is not lost at boundaries.
+2. **Chunking** — Text split into overlapping windows (500 words, 50-word overlap) to preserve context at chunk boundaries.
 
-3. **Indexing**: Each chunk is embedded locally using `all-MiniLM-L6-v2` (384 dimensions) and stored in ChromaDB with cosine similarity space.
+3. **Indexing** — Each chunk embedded locally using `all-MiniLM-L6-v2` (384 dimensions) and stored in ChromaDB with cosine similarity space. No external embedding API cost.
 
-4. **Retrieval**: At query time, the question is embedded and top-K most similar chunks are retrieved using cosine similarity.
+4. **Retrieval** — At query time, the question is embedded and top-K most similar chunks retrieved using cosine similarity.
 
-5. **Generation**: Retrieved chunks are injected as context into LLaMA 3.3 70B via Groq's ultra-fast inference API, which streams the response back token by token via SSE.
+5. **Generation** — Retrieved chunks injected as context into LLaMA 3.3 70B via Groq's ultra-fast inference API, streamed back token by token via SSE.
 
-6. **Confidence**: The cosine similarity score of the top retrieved chunk determines the confidence level — transparent to the user via color-coded badges.
+6. **Confidence Scoring** — Cosine similarity score of top retrieved chunk determines confidence level shown as color-coded badges.
 
----
-
-## 🎥 Video Demo
-
-📹 [Watch on YouTube (Unlisted)](https://youtu.be/DxRW0GxrZhQ)
+7. **Security** — Every question passes through 15-pattern injection detector before reaching the LLM.
 
 ---
+
 
 ## 👤 Author
 
-**Mohammed Razi** — [GitHub](https://github.com/razi-ekp) [LinkedIn](https://linkedin.com/in/raziekp)
+**Mohammed Razi** — [GitHub](https://github.com/razi-ekp) | [LinkedIn](https://linkedin.com/in/raziekp)
 
 ---
 
 ## 📄 License
 
-MIT License — see [LICENSE](LICENSE) for details.
+MIT License
